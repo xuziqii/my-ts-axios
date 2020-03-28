@@ -1,4 +1,4 @@
-import { isObject, isDate } from './utils'
+import { isPlainObject, isDate } from './utils'
 
 // 保留部分 符号不转换
 function enCode(param: string): string {
@@ -39,8 +39,10 @@ export function buildUrl(url: string, params?: any): string {
     else if (isDate(val)) {
       keyValArray.push(`${enCode(key)}=${enCode(val.toISOString())}`)
     } // Object
-    else if (isObject(val)) {
+    else if (isPlainObject(val)) {
       keyValArray.push(`${enCode(key)}=${enCode(JSON.stringify(val))}`)
+    } else {
+      keyValArray.push(`${enCode(key)}=${enCode(val)}`)
     }
   })
 
@@ -54,5 +56,6 @@ export function buildUrl(url: string, params?: any): string {
 
   // ?
   let searchMark = url.includes('?')
-  return (url = searchMark ? res : `?${res}`)
+  // console.log()
+  return (url += (searchMark ? '&' : '?') + res)
 }
