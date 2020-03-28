@@ -1,8 +1,3 @@
-import AxiosConfig from './interface/axiosConfig'
-import xhr from './xhr'
-
-function axios(config: AxiosConfig): void {
-  xhr(config)
-}
-
+import axios from './axios'
+export * from './interface'
 export default axios
