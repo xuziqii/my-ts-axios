@@ -27,55 +27,78 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const router = express.Router()
 
 // simple
-router.get('/simple/get', function(req, res) {
-  res.json({
-    msg: `hello TypeScript`
-  })
-})
-
+generateSimpleRoute()
 // base
-router.get('/base/get', function(req, res) {
-  res.json(req.query)
-})
-
+generateBaseRoute()
 // post
-router.post('/post/buffer', function(req, res) {
-  let msg = []
-  req.on('data', (chunk) => {
-    if (chunk) {
-      msg.push(chunk)
+generatePostRoute()
+// error
+generateErrorRoute()
+
+// interceptor
+generateInterceptorRoute()
+
+
+
+function generateInterceptorRoute () {
+  router.get('/interceptor/get', function(req, res) {
+    res.end('hello')
+  })
+}
+
+function generateSimpleRoute () {
+  router.get('/simple/get', function(req, res) {
+    res.json({
+      msg: `hello TypeScript`
+    })
+  })
+}
+
+function generateBaseRoute () {
+  router.get('/base/get', function(req, res) {
+    res.json(req.query)
+  })
+}
+
+function generatePostRoute () {
+  router.post('/post/buffer', function(req, res) {
+    let msg = []
+    req.on('data', (chunk) => {
+      if (chunk) {
+        msg.push(chunk)
+      }
+    })
+
+    req.on('end', () => {
+      let buf = Buffer.concat(msg)
+      res.json(buf.toJSON())
+    })
+  })
+  router.post('/post/base', function(req, res) {
+    res.json(req.body)
+  })
+}
+
+function generateErrorRoute () {
+  router.get('/error/timeout', function(req, res) {
+    setTimeout(() => {
+      res.json({
+        message: 'hello timeout'
+      })
+    }, 3000)
+  })
+
+  router.get('/error/get', function(req, res) {
+    if (Math.random() < 0.5) {
+      res.json({
+        message: 'hello world'
+      })
+    } else {
+      res.status(500)
+      res.end()
     }
   })
-
-  req.on('end', () => {
-    let buf = Buffer.concat(msg)
-    res.json(buf.toJSON())
-  })
-})
-router.post('/post/base', function(req, res) {
-  res.json(req.body)
-})
-
-// error
-router.get('/error/timeout', function(req, res) {
-  setTimeout(() => {
-    res.json({
-      message: 'hello timeout'
-    })
-  }, 3000)
-})
-
-router.get('/error/get', function(req, res) {
-  if (Math.random() < 0.5) {
-    res.json({
-      message: 'hello world'
-    })
-  } else {
-    res.status(500)
-    res.end()
-  }
-})
-
+}
 
 app.use(router)
 
