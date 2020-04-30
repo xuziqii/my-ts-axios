@@ -1,2 +1,2 @@
-import createAxiosInstance from './core'
-export default createAxiosInstance()
+import axios from './core'
+export default axios

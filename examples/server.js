@@ -38,6 +38,8 @@ generateErrorRoute()
 // interceptor
 generateInterceptorRoute()
 
+generateConfigRoute()
+
 
 
 function generateInterceptorRoute () {
@@ -97,6 +99,12 @@ function generateErrorRoute () {
       res.status(500)
       res.end()
     }
+  })
+}
+
+function generateConfigRoute () {
+  router.post('/config/post', function(req, res) {
+    res.json(req.body)
   })
 }
 
