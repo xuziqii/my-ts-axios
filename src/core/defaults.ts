@@ -1,4 +1,7 @@
 import { AxiosConfig } from '../interface'
+import { transformRequestHeaders } from '../helper/headers'
+import { transformRequestData } from '../helper/requestData'
+import { transformResponseData } from '../helper/responseData'
 
 const defaults: AxiosConfig = {
   method: 'get',
@@ -7,7 +10,20 @@ const defaults: AxiosConfig = {
     common: {
       Accept: 'application/json, text/plain, */*'
     }
-  }
+  },
+  // request.data =
+  transformRequest: [
+    function(data, headers) {
+      transformRequestHeaders(headers, data)
+      return transformRequestData(data)
+    }
+  ],
+  // res.data =
+  transformResponse: [
+    function(data, headers) {
+      return transformResponseData(data)
+    }
+  ]
 }
 
 // 针对不同的方法 添加headers

@@ -69,6 +69,5 @@ export default function mergeConfig(config1: AxiosConfig, config2?: AxiosConfig)
     config[key] = strategic(config1[key], config2![key])
   }
 
-  console.log(config)
   return config
 }
