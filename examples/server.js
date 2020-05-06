@@ -1,12 +1,17 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
 
+require('./server2')
+
 const app = express()
 const compiler = webpack(WebpackConfig)
+
+
 
 app.use(webpackDevMiddleware(compiler, {
   publicPath: '/__build__/',
@@ -20,6 +25,7 @@ app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static(__dirname))
 
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -38,7 +44,14 @@ generateErrorRoute()
 // interceptor
 generateInterceptorRoute()
 
+// config
 generateConfigRoute()
+
+// cancel
+generateCancelRoute()
+
+// more
+generateMoreRoute()
 
 
 
@@ -105,6 +118,27 @@ function generateErrorRoute () {
 function generateConfigRoute () {
   router.post('/config/post', function(req, res) {
     res.json(req.body)
+  })
+}
+
+function generateCancelRoute () {
+  router.post('/cancel/post', function(req, res) {
+    setTimeout(() => {
+      res.json(req.body)
+    }, 1000)
+  })
+  router.get('/cancel/get', function(req, res) {
+    setTimeout(() => {
+      res.json({
+        message: 'hello cancel'
+      })
+    }, 1000)
+  })
+}
+
+function generateMoreRoute () {
+  router.get('/more/get', function(req, res) {
+    res.json(req.cookies)
   })
 }
 

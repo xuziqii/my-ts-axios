@@ -1,11 +1,21 @@
-import { AxiosConfig, AxiosPromise, AxiosResponse } from './interface'
+import { AxiosConfig, AxiosPromise, AxiosResponse } from '../interface'
 
-import { parseResponseHeaders } from './helper/headers'
-import createError from './helper/error'
+import { parseResponseHeaders } from '../helper/headers'
+import createError from '../helper/error'
 
 export default function xhr(config: AxiosConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, url, method = 'GET', params, headers, responseType, timeout } = config
+    const {
+      data = null,
+      url,
+      method = 'GET',
+      params,
+      headers,
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials
+    } = config
     const request = new XMLHttpRequest()
 
     // xhr 要将请求方法转为 大写
@@ -26,6 +36,9 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
     }
     if (timeout) {
       request.timeout = timeout
+    }
+    if (withCredentials) {
+      request.withCredentials = withCredentials
     }
 
     request.ontimeout = function handleTimeout() {
@@ -65,6 +78,13 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
         }
         handleResponse(res)
       }
+    }
+    // 取消
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
     }
     request.send(data)
   })
