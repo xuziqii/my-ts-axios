@@ -50,8 +50,8 @@ generateConfigRoute()
 // cancel
 generateCancelRoute()
 
-// more
-generateMoreRoute()
+// credentials
+generateCredentialsRoute()
 
 
 
@@ -136,15 +136,15 @@ function generateCancelRoute () {
   })
 }
 
-function generateMoreRoute () {
-  router.get('/more/get', function(req, res) {
+function generateCredentialsRoute () {
+  router.get('/credentials/get', function(req, res) {
     res.json(req.cookies)
   })
 }
 
 app.use(router)
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 9000
 module.exports = app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}, Ctrl+C to stop`)
 })
