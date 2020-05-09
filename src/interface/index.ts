@@ -28,6 +28,7 @@ export interface AxiosConfig {
   [propsName: string]: any
   cancelToken?: CancelToken
   withCredentials?: boolean
+  baseUrl?: string
 }
 
 export interface AxiosTransformer {
@@ -72,13 +73,14 @@ export interface Axios {
 export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosConfig): AxiosPromise<T>
   <T = any>(url: any, config?: AxiosConfig): AxiosPromise<T>
+  getUri: (config: AxiosConfig) => string
 }
 
 export interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosConfig): AxiosInstance
   CancelToken: CancelTokenStatic
   Cancel: CancelStatic
-  isCancel: (value: any) => Boolean
+  isCancel: (value: any) => boolean
 }
 
 export interface ResolveFn<T> {

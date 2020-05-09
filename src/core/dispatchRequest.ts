@@ -18,9 +18,17 @@ function processConfig(config: AxiosConfig): void {
   config.headers = flattenHeaders(config.headers, config.method)
 }
 
-function processUrl(config: AxiosConfig): string {
-  const { url, params } = config
+export function processUrl(config: AxiosConfig): string {
+  let { url, params, baseUrl } = config
+  url = processBaseUrl(url!, baseUrl)
   return buildUrl(url!, params)
+}
+
+function processBaseUrl(url: string, baseUrl?: string): string {
+  if (baseUrl) {
+    url = baseUrl.replace(/\/*$/, '') + '/' + url.replace(/^\/*/, '')
+  }
+  return url
 }
 
 function processResponseData(res: AxiosResponse): AxiosResponse {
