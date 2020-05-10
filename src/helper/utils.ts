@@ -38,3 +38,7 @@ export function deepMerge(...params: any[]): any {
   })
   return res
 }
+
+export function isURLSearchParams(value: any): value is URLSearchParams {
+  return value instanceof URLSearchParams
+}

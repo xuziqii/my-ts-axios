@@ -19,9 +19,9 @@ function processConfig(config: AxiosConfig): void {
 }
 
 export function processUrl(config: AxiosConfig): string {
-  let { url, params, baseUrl } = config
+  let { url, params, baseUrl, paramsSerializer } = config
   url = processBaseUrl(url!, baseUrl)
-  return buildUrl(url!, params)
+  return buildUrl(url!, params, paramsSerializer)
 }
 
 function processBaseUrl(url: string, baseUrl?: string): string {

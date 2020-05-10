@@ -27,7 +27,6 @@ axios.CancelToken = CancelToken
 
 axios.getUri = function(config) {
   config = mergeConfig(axios.defaults, config)
-  debugger
   return processUrl(config)
 }
 

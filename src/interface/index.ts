@@ -29,6 +29,7 @@ export interface AxiosConfig {
   cancelToken?: CancelToken
   withCredentials?: boolean
   baseUrl?: string
+  paramsSerializer?: (params?: any) => string
 }
 
 export interface AxiosTransformer {
