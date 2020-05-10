@@ -23,69 +23,89 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
 
     // 设置请求头
     // 此方法必须在  open() 方法和 send() 之间调用
-    Object.keys(headers).forEach(name => {
-      if (data === null && name.toLowerCase() === 'content-type') {
-        delete headers[name]
-      } else {
-        request.setRequestHeader(name, headers[name])
-      }
-    })
+    processHeader()
 
-    if (responseType) {
-      request.responseType = responseType
-    }
-    if (timeout) {
-      request.timeout = timeout
-    }
-    if (withCredentials) {
-      request.withCredentials = withCredentials
-    }
+    processConfiguration()
 
-    request.ontimeout = function handleTimeout() {
-      reject(createError(`Timeout exceeded ${timeout} ms`, config, 'ECONNABORTED', request))
-    }
-
-    request.onerror = function handleError() {
-      reject(createError(`Network Error`, config, null, request))
-    }
+    processEvent()
 
     function handleResponse(response: AxiosResponse): void {
       const { status } = response
-      if (status >= 200 && status <= 300) {
+      const validateStatus = response.config.validateStatus!
+      // if (status >= 200 && status <= 300) {
+      if (validateStatus(status)) {
         resolve(response)
+      } else {
+        reject(
+          createError(`Request failed with status code ${status}`, config, null, request, response)
+        )
       }
-      reject(
-        createError(`Request failed with status code ${status}`, config, null, request, response)
-      )
     }
 
-    request.onreadystatechange = function handleStateChange() {
-      if (request.status === 0) {
-        return
-      }
-      if (request.readyState === 4) {
-        const responseHeaders = parseResponseHeaders(request.getAllResponseHeaders())
-        const responseData = responseType === 'text' ? request.responseText : request.response
-        const responseStatus = request.status
-        const responseStatusText = request.statusText
-        const res: AxiosResponse = {
-          data: responseData,
-          status: responseStatus,
-          statusText: responseStatusText,
-          headers: responseHeaders,
-          config,
-          request
+    // header
+    function processHeader() {
+      Object.keys(headers).forEach(name => {
+        if (data === null && name.toLowerCase() === 'content-type') {
+          delete headers[name]
+        } else {
+          request.setRequestHeader(name, headers[name])
         }
-        handleResponse(res)
-      }
-    }
-    // 取消
-    if (cancelToken) {
-      cancelToken.promise.then(reason => {
-        request.abort()
-        reject(reason)
       })
     }
+
+    function processConfiguration() {
+      if (responseType) {
+        request.responseType = responseType
+      }
+
+      if (timeout) {
+        request.timeout = timeout
+      }
+
+      if (withCredentials) {
+        request.withCredentials = withCredentials
+      }
+
+      // 取消
+      if (cancelToken) {
+        cancelToken.promise.then(reason => {
+          request.abort()
+          reject(reason)
+        })
+      }
+    }
+    // 事件处理
+    function processEvent() {
+      request.ontimeout = function handleTimeout() {
+        reject(createError(`Timeout exceeded ${timeout} ms`, config, 'ECONNABORTED', request))
+      }
+
+      request.onerror = function handleError() {
+        reject(createError(`Network Error`, config, null, request))
+      }
+
+      request.onreadystatechange = function handleStateChange() {
+        if (request.status === 0) {
+          return
+        }
+        if (request.readyState === 4) {
+          const responseHeaders = parseResponseHeaders(request.getAllResponseHeaders())
+          const responseData = responseType === 'text' ? request.responseText : request.response
+          const responseStatus = request.status
+          const responseStatusText = request.statusText
+          const res: AxiosResponse = {
+            data: responseData,
+            status: responseStatus,
+            statusText: responseStatusText,
+            headers: responseHeaders,
+            config,
+            request
+          }
+          handleResponse(res)
+        }
+      }
+    }
+
     request.send(data)
   })
 }

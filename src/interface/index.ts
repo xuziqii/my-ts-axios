@@ -30,6 +30,7 @@ export interface AxiosConfig {
   withCredentials?: boolean
   baseUrl?: string
   paramsSerializer?: (params?: any) => string
+  validateStatus?: (status: number) => boolean
 }
 
 export interface AxiosTransformer {

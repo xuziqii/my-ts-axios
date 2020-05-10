@@ -23,7 +23,14 @@ const defaults: AxiosConfig = {
     function(data, headers) {
       return transformResponseData(data)
     }
-  ]
+  ],
+
+  validateStatus: function(status) {
+    if (status >= 200 && status <= 300) {
+      return true
+    }
+    return false
+  }
 }
 
 // 针对不同的方法 添加headers
