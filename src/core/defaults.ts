@@ -30,7 +30,10 @@ const defaults: AxiosConfig = {
       return true
     }
     return false
-  }
+  },
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
 }
 
 // 针对不同的方法 添加headers

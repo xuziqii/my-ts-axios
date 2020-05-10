@@ -25,12 +25,15 @@ export interface AxiosConfig {
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
 
-  [propsName: string]: any
   cancelToken?: CancelToken
   withCredentials?: boolean
   baseUrl?: string
   paramsSerializer?: (params?: any) => string
   validateStatus?: (status: number) => boolean
+  xsrfCookieName?: string
+  xsrfHeaderName?: string
+
+  [propsName: string]: any
 }
 
 export interface AxiosTransformer {

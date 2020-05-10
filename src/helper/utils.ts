@@ -1,3 +1,8 @@
+interface UrlOrigin {
+  host: string
+  protocol: string
+}
+
 export function isObject(obj: any): obj is Object {
   return obj != null && typeof obj === 'object'
 }
@@ -41,4 +46,22 @@ export function deepMerge(...params: any[]): any {
 
 export function isURLSearchParams(value: any): value is URLSearchParams {
   return value instanceof URLSearchParams
+}
+
+export function isSameOrigin(url: string): boolean {
+  const curUrl = window.location.href
+  const urlRes = resolveUrl(url)
+  const curUrlRes = resolveUrl(curUrl)
+
+  return urlRes.host === curUrlRes.host && urlRes.protocol === curUrlRes.protocol
+}
+
+function resolveUrl(url: string): UrlOrigin {
+  const node = document.createElement('a')
+  node.setAttribute('href', url)
+  const { host, protocol } = node
+  return {
+    host,
+    protocol
+  }
 }
