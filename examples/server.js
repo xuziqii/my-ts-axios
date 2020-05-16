@@ -23,7 +23,11 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler))
 
-app.use(express.static(__dirname))
+app.use(express.static(__dirname, {
+  setHeaders(res) {
+    res.cookie('xxx-cookie', 12343)
+  }
+}))
 
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -53,7 +57,17 @@ generateCancelRoute()
 // credentials
 generateCredentialsRoute()
 
+// Xsrf
+generateXsrfRoute()
 
+
+function generateXsrfRoute () {
+  router.get('/xsrf/get', function(req, res) {
+    res.json({
+      msg: `hello TypeScript`
+    })
+  })
+}
 
 function generateInterceptorRoute () {
   router.get('/interceptor/get', function(req, res) {
