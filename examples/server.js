@@ -60,6 +60,15 @@ generateCredentialsRoute()
 // Xsrf
 generateXsrfRoute()
 
+// validateStatus
+generateValidateStatusRoute()
+
+function generateValidateStatusRoute () {
+  router.get('/validateStatus/304', function(req, res) {
+    res.status(304)
+    res.end()
+  })
+}
 
 function generateXsrfRoute () {
   router.get('/xsrf/get', function(req, res) {
