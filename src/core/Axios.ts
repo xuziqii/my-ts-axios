@@ -6,7 +6,7 @@ import {
   ResolveFn,
   RejectFn
 } from '../interface'
-import dispatchRequest from './dispatchRequest'
+import dispatchRequest, { processUrl } from './dispatchRequest'
 import InterceptorManager from './interceptor'
 import mergeConfig from './mergeConfig'
 
@@ -85,6 +85,11 @@ export default class Axios {
 
   patch(url: string, data?: any, config?: AxiosConfig): AxiosPromise {
     return this._handleUpdateConfigWithoutData('PATCH', url, data, config)
+  }
+
+  getUri(config?: AxiosConfig) {
+    config = mergeConfig(this.defaults, config)
+    return processUrl(config)
   }
 
   _handleUpdateConfigWithData(method: Methods, url: string, config?: AxiosConfig): AxiosPromise {

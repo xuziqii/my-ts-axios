@@ -19,16 +19,25 @@ function processConfig(config: AxiosConfig): void {
 }
 
 export function processUrl(config: AxiosConfig): string {
-  let { url, params, baseUrl, paramsSerializer } = config
-  url = processBaseUrl(url!, baseUrl)
+  let { url, params, baseURL, paramsSerializer } = config
+  url = processBaseUrl(url!, baseURL)
   return buildUrl(url!, params, paramsSerializer)
 }
 
-function processBaseUrl(url: string, baseUrl?: string): string {
-  if (baseUrl) {
-    url = baseUrl.replace(/\/*$/, '') + '/' + url.replace(/^\/*/, '')
+function processBaseUrl(url: string, baseURL?: string): string {
+  if (baseURL && !isAbsoluteURL(url!)) {
+    // url = baseURL.replace(/\/*$/, '') + '/' + url.replace(/^\/*/, '')
+    url = combineURL(baseURL, url)
   }
   return url
+}
+
+export function combineURL(baseURL: string, relativeURL?: string): string {
+  return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL
+}
+
+export function isAbsoluteURL(url: string): boolean {
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
 }
 
 function processResponseData(res: AxiosResponse): AxiosResponse {

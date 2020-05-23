@@ -27,7 +27,7 @@ export interface AxiosConfig {
 
   cancelToken?: CancelToken
   withCredentials?: boolean
-  baseUrl?: string
+  baseURL?: string
   paramsSerializer?: (params?: any) => string
   validateStatus?: (status: number) => boolean
   xsrfCookieName?: string
@@ -83,12 +83,12 @@ export interface Axios {
   post<T = any>(url: string, data?: any, config?: AxiosConfig): AxiosPromise<T>
   put<T = any>(url: string, data?: any, config?: AxiosConfig): AxiosPromise<T>
   patch<T = any>(url: string, data?: any, config?: AxiosConfig): AxiosPromise<T>
+  getUri: (config?: AxiosConfig) => string
 }
 
 export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosConfig): AxiosPromise<T>
   <T = any>(url: any, config?: AxiosConfig): AxiosPromise<T>
-  getUri: (config: AxiosConfig) => string
 }
 
 export interface AxiosStatic extends AxiosInstance {
@@ -96,6 +96,14 @@ export interface AxiosStatic extends AxiosInstance {
   CancelToken: CancelTokenStatic
   Cancel: CancelStatic
   isCancel: (value: any) => boolean
+
+  all<T>(requests: Array<T | Promise<T>>): Promise<T[]>
+  spread<T, R>(callBack: (...args: T[]) => R): (arr: T[]) => R
+  Axios: AxiosClassStatic
+}
+
+interface AxiosClassStatic {
+  new (config: AxiosConfig): Axios
 }
 
 export interface ResolveFn<T> {

@@ -78,6 +78,18 @@ generateLoadRoute()
 // auth
 generateAuthRoute()
 
+// all spread
+generateMoreRoute ()
+
+function generateMoreRoute () {
+  router.get('/more/A', function (req, res) {
+    res.end('success A')
+  })
+  router.get('/more/B', function (req, res) {
+    res.end('success B')
+  })
+}
+
 function generateAuthRoute () {
   router.get('/auth/get', function (req, res) {
     const auth= atob(req.headers.authorization.split(' ')[1])

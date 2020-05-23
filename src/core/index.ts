@@ -5,7 +5,6 @@ import defaults from './defaults'
 import mergeConfig from './mergeConfig'
 import Cancel, { isCancel } from '../cancel/Cancel'
 import CancelToken from '../cancel/CancelToken'
-import { processUrl } from './dispatchRequest'
 
 function createAxiosInstance(defaultConfig: AxiosConfig): AxiosStatic {
   const instance = new Axios(defaultConfig)
@@ -25,9 +24,15 @@ axios.Cancel = Cancel
 
 axios.CancelToken = CancelToken
 
-axios.getUri = function(config) {
-  config = mergeConfig(axios.defaults, config)
-  return processUrl(config)
+axios.all = function(promises) {
+  return Promise.all(promises)
 }
+axios.spread = function(cb) {
+  return function(arr) {
+    return cb.call(null, ...arr)
+  }
+}
+
+axios.Axios = Axios
 
 export default axios
