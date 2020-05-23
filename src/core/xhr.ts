@@ -2,7 +2,7 @@ import { AxiosConfig, AxiosPromise, AxiosResponse } from '../interface'
 
 import { parseResponseHeaders } from '../helper/headers'
 import createError from '../helper/error'
-import { isSameOrigin } from '../helper/utils'
+import { isSameOrigin, isFormData } from '../helper/utils'
 import cookie from '../helper/cookie'
 
 export default function xhr(config: AxiosConfig): AxiosPromise {
@@ -18,7 +18,9 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
       cancelToken,
       withCredentials,
       xsrfCookieName,
-      xsrfHeaderName
+      xsrfHeaderName,
+      onDownloadProgress,
+      onUploadProgress
     } = config
     const request = new XMLHttpRequest()
 
@@ -53,6 +55,10 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
         if (cookieValue && xsrfHeaderName) {
           headers[xsrfHeaderName] = cookieValue
         }
+      }
+
+      if (isFormData(data)) {
+        delete headers['Content-Type']
       }
       Object.keys(headers).forEach(name => {
         if (data === null && name.toLowerCase() === 'content-type') {
@@ -92,6 +98,14 @@ export default function xhr(config: AxiosConfig): AxiosPromise {
 
       request.onerror = function handleError() {
         reject(createError(`Network Error`, config, null, request))
+      }
+
+      if (onDownloadProgress) {
+        request.onprogress = onDownloadProgress
+      }
+
+      if (onUploadProgress) {
+        request.upload.onprogress = onUploadProgress
       }
 
       request.onreadystatechange = function handleStateChange() {

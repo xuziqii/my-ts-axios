@@ -1,10 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const connectMultiparty = require('connect-multiparty')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+
+const path = require('path')
 
 require('./server2')
 
@@ -33,6 +36,10 @@ app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+// 上传文件 中间件
+app.use(connectMultiparty({
+  uploadDir: path.resolve(__dirname, 'upload-files')
+}))
 
 const router = express.Router()
 
@@ -62,6 +69,18 @@ generateXsrfRoute()
 
 // validateStatus
 generateValidateStatusRoute()
+
+// upload
+generateLoadRoute()
+
+
+function generateLoadRoute () {
+  router.post('/load/upload', function (req, res) {
+    console.log(req.body, req.files)
+    res.end('upload success')
+  })
+}
+
 
 function generateValidateStatusRoute () {
   router.get('/validateStatus/304', function(req, res) {

@@ -65,3 +65,7 @@ function resolveUrl(url: string): UrlOrigin {
     protocol
   }
 }
+
+export function isFormData(value: any): value is FormData {
+  return typeof value !== 'undefined' && value instanceof FormData
+}
