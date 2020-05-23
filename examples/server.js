@@ -5,6 +5,8 @@ const connectMultiparty = require('connect-multiparty')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
+const atob = require('atob')
+
 const WebpackConfig = require('./webpack.config')
 
 const path = require('path')
@@ -73,6 +75,24 @@ generateValidateStatusRoute()
 // upload
 generateLoadRoute()
 
+// auth
+generateAuthRoute()
+
+function generateAuthRoute () {
+  router.get('/auth/get', function (req, res) {
+    const auth= atob(req.headers.authorization.split(' ')[1])
+    const [ username, password] = auth.split(':')
+
+    // res.end('success' + req.headers.authorization)
+    if (username === '123' && password === 'abcd') {
+      res.end('success' + username + ':' + password)
+    } else {
+      res.status(401)
+      res.end('UnAuthorization')
+    }
+
+  })
+}
 
 function generateLoadRoute () {
   router.post('/load/upload', function (req, res) {

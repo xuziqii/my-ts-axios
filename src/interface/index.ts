@@ -36,7 +36,14 @@ export interface AxiosConfig {
   onDownloadProgress?: (event: ProgressEvent) => void
   onUploadProgress?: (event: ProgressEvent) => void
 
+  auth?: AxiosAuth
+
   [propsName: string]: any
+}
+
+interface AxiosAuth {
+  username: string
+  password: string
 }
 
 export interface AxiosTransformer {

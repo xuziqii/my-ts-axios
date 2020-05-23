@@ -37,7 +37,7 @@ strategicKeysOnlyConfig2.forEach(key => {
 })
 
 // deepMerge
-const strategicKeysDeepMerge = ['headers']
+const strategicKeysDeepMerge = ['headers', 'auth']
 
 strategicKeysDeepMerge.forEach(key => {
   strategicMap[key] = deepMergeStrategic
